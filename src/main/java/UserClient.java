@@ -33,7 +33,6 @@ public class UserClient extends RestAssuredClient{
 
     public Response sentPostToLogin(UserCredentials userCredentials) {
         Response response = reqSpec.and().body(userCredentials).when().post("auth/login");
-        response.then().assertThat().statusCode(SC_OK);
         return response;
     }
 
@@ -41,6 +40,9 @@ public class UserClient extends RestAssuredClient{
         response.then().assertThat().statusCode(SC_OK).and().body("success",is(true));
     }
 
+    public void compareResponseCodeAndBodyAboutLoginWrong(Response response) {
+        response.then().assertThat().statusCode(401).and().body("success", is(false)).and().body("message", is("email or password are incorrect"));
+    }
     public Response sentDeleteToRemoveUser(String accessToken) {
         Response response = reqSpecGet.header("Authorization", accessToken).when().delete(USER_AUTH);
         response.then().assertThat().statusCode(SC_ACCEPTED);
