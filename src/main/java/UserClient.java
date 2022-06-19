@@ -49,6 +49,16 @@ public class UserClient extends RestAssuredClient{
         return response;
     }
 
+    public Response sentPatchToChangeUserData(String accessToken,String json) {
+        Response response = reqSpec.header("Authorization", accessToken).and().body(json).when().patch(USER_AUTH);
+        return response;
+    }
+
+    public Response sentPatchToChangeWithoutAuthUserData(String json) {
+        Response response = reqSpec.and().body(json).when().patch(USER_AUTH);
+        return response;
+    }
+
     public void compareResponseCodeAndBodyAboutRemove(Response response) {
         response.then().assertThat().statusCode(SC_ACCEPTED).and().body("success", is(true)).and().body("message", is("User successfully removed"));
     }
