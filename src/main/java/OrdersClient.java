@@ -17,20 +17,20 @@ public class OrdersClient extends RestAssuredClient{
         return reqSpec.and().body(json).when().post(ORDERS);
     }
 
-    public void compareResponseCodeAndBodyAboutOrderCreation (Response response) {
-        response.then().assertThat().statusCode(SC_OK).and().body("success", is(true)).and().body("order.number", greaterThan(0));
-    }
-
-    public void compareCodeAndSuccessStatusAndMessageOrders(Response response, int expectedHttp, boolean expectedSuccess, String expectedMessage) {
-        response.then().assertThat().statusCode(expectedHttp).and().body("success", is(expectedSuccess)).and().body("message", is(expectedMessage));
-    }
-
     public Response sentGetToGetUsersOrders (String accessToken) {
         return  reqSpecGet.auth().oauth2(accessToken).when().get(ORDERS);
     }
 
     public Response sentGetToGetUsersOrdersWithoutAuth () {
         return  reqSpecGet.when().get(ORDERS);
+    }
+
+    public void compareResponseCodeAndBodyAboutOrderCreation (Response response) {
+        response.then().assertThat().statusCode(SC_OK).and().body("success", is(true)).and().body("order.number", greaterThan(0));
+    }
+
+    public void compareCodeAndSuccessStatusAndMessageOrders(Response response, int expectedHttp, boolean expectedSuccess, String expectedMessage) {
+        response.then().assertThat().statusCode(expectedHttp).and().body("success", is(expectedSuccess)).and().body("message", is(expectedMessage));
     }
 
     public void compareResponseCode500 (Response response) {

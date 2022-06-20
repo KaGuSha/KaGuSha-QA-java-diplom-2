@@ -1,6 +1,8 @@
 import lombok.Data;
 import org.apache.commons.lang3.RandomStringUtils;
 
+import java.util.Locale;
+
 @Data
 public class UserData {
     private String email;
@@ -14,7 +16,7 @@ public class UserData {
     }
 
     public static UserData getRandom() {
-        String email = RandomStringUtils.randomAlphanumeric(15)+"@test.test";
+        String email = RandomStringUtils.randomAlphanumeric(15).toLowerCase()+"@test.test";
         String password = RandomStringUtils.randomAlphanumeric(15);
         String name = RandomStringUtils.randomAlphabetic(10);
 

@@ -22,7 +22,7 @@ public class UserLoginResponseTest {
         UserCredentials json = UserCredentials.from(jsonUserCreate);
         Response response = userClient.sentPostToLogin(json);
 
-        userClient.compareResponseCodeAndBodyAboutLoginSuccess(response);
+        userClient.compareResponseCodeAndBodyReturn200True(response);
 
         userClient.checkResponseBodyWithUserData(jsonUserCreate, response);
         /*

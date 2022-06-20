@@ -1,10 +1,7 @@
 import io.restassured.response.Response;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.hamcrest.Matchers.is;
 
 public class UserChangeDataTest {
     private UserClient userClient;
@@ -26,69 +23,65 @@ public class UserChangeDataTest {
 
     @Test
     public void checkChangeNameWithAuth() {
+        String email = jsonUserCreate.getEmail();
+        String password = jsonUserCreate.getPassword();
+        String name = "Change";
 
-        String json = "{\"name\": \"change125\"}";
-        Response response = userClient.sentPatchToChangeUserData(accessToken,json);
-        System.out.println(response);
+        String json = "{\"name\": \"" + name + "\"}";
 
+        Response response = userClient.sentPatchToChangeUserData(accessToken, json);
         userClient.compareResponseCodeAndBodyReturn200True(response);
+        UserData userDataRefresh = new UserData(email, password, name);
+        userClient.checkResponseBodyAfterChangeWithUserData(userDataRefresh, response);
 
-        userClient.checkResponseBodyWithUserData(jsonUserCreate,response);
-
-        String actual = response.then().extract().path("user.name");
-        Assert.assertEquals("change125",actual);
-
-        //userClient.sentPostToLogin(json)
+        UserCredentials jsonToLoginAfterChange = UserCredentials.from(userDataRefresh);
+        Response responseUserLogin = userClient.sentPostToLogin(jsonToLoginAfterChange);
+        userClient.compareResponseCodeAndBodyReturn200True(responseUserLogin);
+        accessToken = responseUserLogin.then().extract().path("accessToken").toString().substring(7);
     }
 
     @Test
     public void checkChangeEmailWithAuth() {
+        String email = "Change125@test.test";
+        String password = jsonUserCreate.getPassword();
+        String name = jsonUserCreate.getName();
 
+        String json = "{\"email\": \"" + email + "\"}";
 
-        String json3 = "{\"email\": \"Change125@test.test\"}";
-        Response response1 = userClient.sentPatchToChangeUserData(accessToken,json3);
-        System.out.println(response1);
-        response1.then().assertThat().statusCode(200).and().body("success",is(true));
+        Response response = userClient.sentPatchToChangeUserData(accessToken, json);
+        userClient.compareResponseCodeAndBodyReturn200True(response);
+        UserData userDataRefresh = new UserData(email, password, name);
+        System.out.println(response.asString());
+        userClient.checkResponseBodyAfterChangeWithUserData(userDataRefresh, response);
 
-        System.out.println(response1.asString());
-        String actual = response1.then().extract().path("user.email");
-        System.out.println(actual);
-
-        Assert.assertEquals("change125@test.test",actual);
+        UserCredentials jsonToLoginAfterChange = UserCredentials.from(userDataRefresh);
+        Response responseUserLogin = userClient.sentPostToLogin(jsonToLoginAfterChange);
+        userClient.compareResponseCodeAndBodyReturn200True(responseUserLogin);
+        accessToken = responseUserLogin.then().extract().path("accessToken").toString().substring(7);
     }
 
     @Test
     public void checkChangePasswordWithAuth() {
-        UserCredentials json2 = UserCredentials.from(jsonUserCreate);
-        Response response = userClient.sentPostToLogin(json2);
-        userClient.compareResponseCodeAndBodyAboutLoginSuccess(response);
-        UserLoginResponse userLoginResponse = response.body().as(UserLoginResponse.class);
-        String tokenBear = userLoginResponse.getAccessToken().substring(7);
-        if (tokenBear!= accessToken) {
-            accessToken = tokenBear;
-        }
+        String email = jsonUserCreate.getEmail();
+        String password = "chanGe20062022";
+        String name = jsonUserCreate.getName();
 
-        String json3 = "{\"password\": \"Change125\"}";
-        Response response1 = userClient.sentPatchToChangeUserData(accessToken,json3);
-        System.out.println(response1);
-        response1.then().assertThat().statusCode(200).and().body("success",is(true));
+        String json = "{\"password\": \"" + password + "\"}";
 
-        //System.out.println(response1.asString());
-        //String actual = response1.then().extract().path("user.pass");
-        //System.out.println(actual);
+        Response response = userClient.sentPatchToChangeUserData(accessToken, json);
+        userClient.compareResponseCodeAndBodyReturn200True(response);
+        UserData userDataRefresh = new UserData(email, password, name);
+        userClient.checkResponseBodyAfterChangeWithUserData(userDataRefresh, response);
 
-        //Assert.assertEquals("change125@test.test",actual);
-
-        UserCredentials json4 = new UserCredentials(json2.getEmail(),"Change125");
-        Response response3 = userClient.sentPostToLogin(json4);
-        userClient.compareResponseCodeAndBodyAboutLoginSuccess(response3);
+        UserCredentials jsonToLoginAfterChange = UserCredentials.from(userDataRefresh);
+        Response responseUserLogin = userClient.sentPostToLogin(jsonToLoginAfterChange);
+        userClient.compareResponseCodeAndBodyReturn200True(responseUserLogin);
+        accessToken = responseUserLogin.then().extract().path("accessToken").toString().substring(7);
     }
-
-
 
     @After
     public void tearDown() {
-        if (accessToken.length()!=0) {
+        if (accessToken.length() != 0) {
             Response response = userClient.sentDeleteToRemoveUser(accessToken);
             userClient.compareResponseCodeAndBodyAboutRemove(response);
         }

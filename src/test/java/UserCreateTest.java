@@ -28,7 +28,7 @@ public class UserCreateTest {
 
         UserCredentials jsonToLogin = UserCredentials.from(json);
         Response responseToLogin = userClient.sentPostToLogin(jsonToLogin);
-        userClient.compareResponseCodeAndBodyAboutLoginSuccess(responseToLogin);
+        userClient.compareResponseCodeAndBodyReturn200True(responseToLogin);
 
         accessToken1 = responseToLogin.then().extract().path("accessToken").toString().substring(7);
     }
