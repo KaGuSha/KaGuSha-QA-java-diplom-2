@@ -19,7 +19,7 @@ public class OrderCreateWithAuthTest {
         userClient = new UserClient();
         UserData jsonUser = UserData.getRandom();
         Response response = userClient.sentPostToCreateUser(jsonUser);
-        accessToken = userClient.compareResponseCodeAndBodyAboutCreation(response).getAccessToken().substring(7);
+        accessToken = response.then().extract().path("accessToken").toString().substring(7);
     }
 
     @Test

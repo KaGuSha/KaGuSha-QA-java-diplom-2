@@ -11,12 +11,12 @@ public class UserCredentials {
         this.password = password;
     }
 
-    public UserCredentials (UserCreation user) {
+    public UserCredentials (UserData user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
     }
 
-    public static UserCredentials from(UserCreation user) {
+    public static UserCredentials from(UserData user) {
         return new UserCredentials(user);
     }
 }
