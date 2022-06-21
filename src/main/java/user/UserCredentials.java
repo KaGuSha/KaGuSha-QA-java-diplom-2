@@ -1,3 +1,5 @@
+package user;
+
 import lombok.Data;
 import lombok.NonNull;
 
@@ -18,5 +20,9 @@ public class UserCredentials {
 
     public static UserCredentials from(UserData user) {
         return new UserCredentials(user);
+    }
+    @Override
+    public String toString() {
+        return "{ \"email\": \"" + email + "\",\"password\": \"" + password + "\"}";
     }
 }

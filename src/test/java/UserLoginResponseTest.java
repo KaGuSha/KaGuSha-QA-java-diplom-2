@@ -1,3 +1,8 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
+import user.UserClient;
+import user.UserCredentials;
+import user.UserData;
 import io.restassured.response.Response;
 import org.junit.*;
 
@@ -17,6 +22,8 @@ public class UserLoginResponseTest {
         accessToken = response.then().extract().path("accessToken").toString().substring(7);
     }
 
+    @DisplayName("Логин под существующим пользователем")
+    @Description("Для логина необходио передать верную пару email-password в теле запроса.")
     @Test
     public void checkLoginWithExistingUserLoginSuccessful() {
         UserCredentials json = UserCredentials.from(jsonUserCreate);
@@ -24,7 +31,8 @@ public class UserLoginResponseTest {
 
         userClient.compareResponseCodeAndBodyReturn200True(response);
 
-        userClient.checkResponseBodyWithUserData(jsonUserCreate, response);
+        userClient.checkAccessTokenAndRefreshTokenInResponseBodyNotNull(jsonUserCreate, response);
+        userClient.compareEmailAndNameInResponseBodyWithUserData(jsonUserCreate,response);
         /*
         String accessToken1 = response.then().extract().path("accessToken").toString().substring(7);
         if (accessToken1 != accessToken) {
@@ -32,6 +40,8 @@ public class UserLoginResponseTest {
         }*/
     }
 
+    @DisplayName("Логин с неверным паролем")
+    @Description("Для логина необходио передать верную пару email-password в теле запроса.")
     @Test
     public void checkLoginWithWrongPassword401False() {
         UserCredentials json = new UserCredentials(jsonUserCreate.getEmail(), jsonUserCreate.getPassword() + "123456");
@@ -41,6 +51,8 @@ public class UserLoginResponseTest {
         userClient.compareResponseCodeAndSuccessStatusAndMessageUsers(response, SC_UNAUTHORIZED, false, "email or password are incorrect");
     }
 
+    @DisplayName("Логин под несуществующим пользователем")
+    @Description("Для логина необходио передать верную пару email-password в теле запроса.")
     @Test
     public void checkLoginWithWrongEmail401False() {
         UserCredentials json = new UserCredentials(jsonUserCreate.getEmail() + "123456", jsonUserCreate.getPassword());
@@ -50,6 +62,8 @@ public class UserLoginResponseTest {
         userClient.compareResponseCodeAndSuccessStatusAndMessageUsers(response, SC_UNAUTHORIZED, false, "email or password are incorrect");
     }
 
+    @DisplayName("Логин под несуществующим пользователем с неверным паролем")
+    @Description("Для логина необходио передать верную пару email-password в теле запроса.")
     @Test
     public void checkLoginWithWrongEmailWrongPassword401False() {
         UserCredentials json = new UserCredentials( jsonUserCreate.getEmail()+"123456", jsonUserCreate.getPassword()+"15d4fs648");

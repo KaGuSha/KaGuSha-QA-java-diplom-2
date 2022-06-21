@@ -1,3 +1,9 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
+import orders.OrderCreate;
+import orders.OrdersClient;
+import user.UserClient;
+import user.UserData;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -11,8 +17,7 @@ import static org.apache.http.HttpStatus.*;
 public class OrderGetTest {
 
     private UserClient userClient;
-
-    String accessToken;
+    private String accessToken;
 
     @Before
     public void setUp() {
@@ -22,6 +27,8 @@ public class OrderGetTest {
         accessToken = response.then().extract().path("accessToken").toString().substring(7);
     }
 
+    @DisplayName("Получение заказов конкретного авторизованного пользователя")
+    @Description("Список заказов может получить авторизованных пользователя. В запросе отправляется токен. Для неавторизованного пользователя вернется ошибка")
     @Test
     public void checkGetOrdersWithOrderWithAuthReturn200True() {
         OrderCreate jsonOrder = OrderCreate.getOrder();
@@ -30,13 +37,14 @@ public class OrderGetTest {
         Response responseOrderCreate = ordersClient.sendPostToCreateOrder(accessToken, jsonOrder);
         ordersClient.compareResponseCodeAndBodyAboutOrderCreation(responseOrderCreate);
 
-
         Response response = ordersClient.sentGetToGetUsersOrders(accessToken);
         ordersClient.compareResponseCodeAndBody200TotalNotNull(response);
 
         ordersClient.isResponseBodyHaveOrdersList(response,1);
     }
 
+    @DisplayName("Получение заказов конкретного авторизованного пользователя, который совершил ранее 2 заказа")
+    @Description("Список заказов может получить авторизованных пользователя. В запросе отправляется токен. Для неавторизованного пользователя вернется ошибка")
     @Test
     public void checkGetOrdersWith2OrdersWithAuthReturn200True() {
         OrderCreate jsonOrder = OrderCreate.getOrder();
@@ -59,6 +67,8 @@ public class OrderGetTest {
         ordersClient.isResponseBodyHaveOrdersList(response,2);
     }
 
+    @DisplayName("Получение заказов конкретного авторизованного пользователя, который не совершил ниодного заказа")
+    @Description("Список заказов может получить авторизованных пользователя. В запросе отправляется токен. Для неавторизованного пользователя вернется ошибка")
     @Test
     public void checkGetOrdersWithoutOrdersWithAuthReturn200True() {
         OrdersClient ordersClient = new OrdersClient();
@@ -68,6 +78,8 @@ public class OrderGetTest {
         System.out.println(response.asString());
     }
 
+    @DisplayName("Получение заказов для неавторизованного пользователя")
+    @Description("Список заказов может получить авторизованных пользователя. В запросе отправляется токен. Для неавторизованного пользователя вернется ошибка")
     @Test
     public void checkGetOrdersWithoutAuthReturn401False() {
         OrdersClient ordersClient = new OrdersClient();

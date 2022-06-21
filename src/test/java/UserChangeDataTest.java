@@ -1,3 +1,8 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
+import user.UserClient;
+import user.UserCredentials;
+import user.UserData;
 import io.restassured.response.Response;
 import org.junit.After;
 import org.junit.Before;
@@ -21,6 +26,8 @@ public class UserChangeDataTest {
         accessToken = responseUserLogin.then().extract().path("accessToken").toString().substring(7);
     }
 
+    @DisplayName("Изменение имени пользователя для авторизованного пользователя")
+    @Description("Авторизованный пользователй может изменить имя, адрес почты и пароль. Для неавторизованного пользователя вернется ошибка")
     @Test
     public void checkChangeNameWithAuth() {
         String email = jsonUserCreate.getEmail();
@@ -32,7 +39,7 @@ public class UserChangeDataTest {
         Response response = userClient.sentPatchToChangeUserData(accessToken, json);
         userClient.compareResponseCodeAndBodyReturn200True(response);
         UserData userDataRefresh = new UserData(email, password, name);
-        userClient.checkResponseBodyAfterChangeWithUserData(userDataRefresh, response);
+        userClient.compareEmailAndNameInResponseBodyWithUserData(userDataRefresh, response);
 
         UserCredentials jsonToLoginAfterChange = UserCredentials.from(userDataRefresh);
         Response responseUserLogin = userClient.sentPostToLogin(jsonToLoginAfterChange);
@@ -40,6 +47,8 @@ public class UserChangeDataTest {
         accessToken = responseUserLogin.then().extract().path("accessToken").toString().substring(7);
     }
 
+    @DisplayName("Изменение адреса почты пользователя для авторизованного пользователя")
+    @Description("Авторизованный пользователй может изменить имя, адрес почты и пароль. Для неавторизованного пользователя вернется ошибка")
     @Test
     public void checkChangeEmailWithAuth() {
         String email = "Change125@test.test";
@@ -52,7 +61,7 @@ public class UserChangeDataTest {
         userClient.compareResponseCodeAndBodyReturn200True(response);
         UserData userDataRefresh = new UserData(email, password, name);
         System.out.println(response.asString());
-        userClient.checkResponseBodyAfterChangeWithUserData(userDataRefresh, response);
+        userClient.compareEmailAndNameInResponseBodyWithUserData(userDataRefresh, response);
 
         UserCredentials jsonToLoginAfterChange = UserCredentials.from(userDataRefresh);
         Response responseUserLogin = userClient.sentPostToLogin(jsonToLoginAfterChange);
@@ -60,6 +69,8 @@ public class UserChangeDataTest {
         accessToken = responseUserLogin.then().extract().path("accessToken").toString().substring(7);
     }
 
+    @DisplayName("Изменение пароля пользователя для авторизованного пользователя")
+    @Description("Авторизованный пользователй может изменить имя, адрес почты и пароль. Для неавторизованного пользователя вернется ошибка")
     @Test
     public void checkChangePasswordWithAuth() {
         String email = jsonUserCreate.getEmail();
@@ -71,7 +82,7 @@ public class UserChangeDataTest {
         Response response = userClient.sentPatchToChangeUserData(accessToken, json);
         userClient.compareResponseCodeAndBodyReturn200True(response);
         UserData userDataRefresh = new UserData(email, password, name);
-        userClient.checkResponseBodyAfterChangeWithUserData(userDataRefresh, response);
+        userClient.compareEmailAndNameInResponseBodyWithUserData(userDataRefresh, response);
 
         UserCredentials jsonToLoginAfterChange = UserCredentials.from(userDataRefresh);
         Response responseUserLogin = userClient.sentPostToLogin(jsonToLoginAfterChange);

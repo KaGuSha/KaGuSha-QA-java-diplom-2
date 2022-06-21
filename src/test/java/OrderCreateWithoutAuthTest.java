@@ -1,3 +1,7 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
+import orders.OrderCreate;
+import orders.OrdersClient;
 import io.restassured.response.Response;
 import org.junit.Test;
 
@@ -8,7 +12,8 @@ import static org.apache.http.HttpStatus.*;
 
 public class OrderCreateWithoutAuthTest {
 
-
+    @DisplayName("Создание заказа без авторизации с корректными хеш кодами ингредиентов в теле запроса")
+    @Description("Заказ создается, если в теле запроса передаются корректные хеш коды ингредиентов.")
     @Test
     public void checkCreateOrderWithIngredientsCorrectHashWithoutAuthReturn200True() {
 
@@ -20,6 +25,8 @@ public class OrderCreateWithoutAuthTest {
         ordersClient.compareResponseCodeAndBodyAboutOrderCreation(response);
     }
 
+    @DisplayName("Создание заказа без авторизации и без ингредиентов в теле запроса")
+    @Description("Заказ создается, если в теле запроса передаются корректные хеш коды ингредиентов.")
     @Test
     public void checkCreateOrderWithoutIngredientsWithoutAuthReturn400False() {
 
@@ -31,6 +38,8 @@ public class OrderCreateWithoutAuthTest {
         ordersClient.compareCodeAndSuccessStatusAndMessageOrders(response, SC_BAD_REQUEST, false, "Ingredient ids must be provided");
     }
 
+    @DisplayName("Создание заказа без авторизации с неверными хеш кодами ингредиентов в теле запроса")
+    @Description("Заказ создается, если в теле запроса передаются корректные хеш коды ингредиентов.")
     @Test
     public void checkCreateOrderWrongIngredientsHashWithoutAuthReturn500() {
         List<String> ingredient = new ArrayList<>();
