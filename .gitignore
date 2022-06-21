@@ -24,6 +24,7 @@ hs_err_pid*
 
 # phpstorm project files
 .idea
+.allure
 
 # target
 /target/
