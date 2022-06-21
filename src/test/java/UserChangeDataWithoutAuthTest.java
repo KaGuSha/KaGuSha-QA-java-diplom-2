@@ -1,0 +1,51 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
+import user.UserClient;
+import io.restassured.response.Response;
+import org.junit.Before;
+import org.junit.Test;
+
+
+import static org.apache.http.HttpStatus.*;
+
+public class UserChangeDataWithoutAuthTest {
+    private UserClient userClient;
+
+    @Before
+    public void setUp() {
+        userClient = new UserClient();
+    }
+
+    @DisplayName("Изменение имени пользователя для неавторизованного пользователя")
+    @Description("Авторизованный пользователй может изменить имя, адрес почты и пароль. Для неавторизованного пользователя вернется ошибка")
+    @Test
+    public void checkChangeNameWithoutAuthReturn401False() {
+        String json = "{\"name\": \"change125\"}";
+        Response response = userClient.sentPatchToChangeWithoutAuthUserData(json);
+        System.out.println(response.asString());
+
+        userClient.compareResponseCodeAndSuccessStatusAndMessageUsers(response,SC_UNAUTHORIZED,false,"You should be authorised");
+    }
+
+    @DisplayName("Изменение адреса почты для неавторизованного пользователя")
+    @Description("Авторизованный пользователй может изменить имя, адрес почты и пароль. Для неавторизованного пользователя вернется ошибка")
+    @Test
+    public void checkChangeEmailWithoutAuthReturn401False() {
+        String json = "{\"email\": \"change20062022@test.test\"}";
+        Response response = userClient.sentPatchToChangeWithoutAuthUserData(json);
+        System.out.println(response.asString());
+
+        userClient.compareResponseCodeAndSuccessStatusAndMessageUsers(response,SC_UNAUTHORIZED,false,"You should be authorised");
+    }
+
+    @DisplayName("Изменение адреса пароля для неавторизованного пользователя")
+    @Description("Авторизованный пользователй может изменить имя, адрес почты и пароль. Для неавторизованного пользователя вернется ошибка")
+    @Test
+    public void checkChangePasswordWithoutAuthReturn401False() {
+        String json = "{\"password\": \"change20062022\"}";
+        Response response = userClient.sentPatchToChangeWithoutAuthUserData(json);
+        System.out.println(response.asString());
+
+        userClient.compareResponseCodeAndSuccessStatusAndMessageUsers(response,SC_UNAUTHORIZED,false,"You should be authorised");
+    }
+}
